@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.ESB.Msmq", "Shuttle.ESB.Msmq\Shuttle.ESB.Msmq.csproj", "{DD6566FD-824C-4275-B4EB-269B0FBC70A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Debug|x64.ActiveCfg = Debug|x64
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Debug|x64.Build.0 = Debug|x64
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Release|x64.ActiveCfg = Release|x64
+		{DD6566FD-824C-4275-B4EB-269B0FBC70A8}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

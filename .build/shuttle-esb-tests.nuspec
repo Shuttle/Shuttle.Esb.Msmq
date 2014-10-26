@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>shuttle-esb-tests</id>
+		<version>{semver}</version>
+		<authors>Eben Roux</authors>
+		<owners>Eben Roux</owners>
+		<licenseUrl>https://github.com/shuttle/shuttle-esb-tests/raw/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/shuttle/shuttle-esb-tests</projectUrl>
+		<iconUrl>https://raw.githubusercontent.com/Shuttle/shuttle-esb-tests/master/.media/logo.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Test fixtures to facilitate testing of components that relate to shuttle-esb.</description>
+		<releaseNotes/>
+		<copyright>Copyright (c) 2011-{year}, Eben Roux</copyright>
+		<tags>shuttle-esb enterprise-service-bus esb messaging service-bus soa</tags>
+		<dependencies>
+			<dependency id="shuttle-esb-core" version="[{shuttle-esb-core-version}]" />
+			<dependency id="shuttle-core-infrastructure" version="[{shuttle-core-infrastructure-version}]" />
+			<dependency id="shuttle-core-infrastructure-log4net" version="[{shuttle-core-infrastructure-log4net-version}]" />
+			<dependency id="NUnit" version="[{NUnit-version}]" />
+			<dependency id="Moq" version="[{Moq-version}]" />
+		</dependencies>
+	</metadata>
+</package>
