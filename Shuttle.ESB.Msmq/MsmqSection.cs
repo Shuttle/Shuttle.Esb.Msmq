@@ -5,11 +5,6 @@ namespace Shuttle.ESB.Msmq
 {
 	public class MsmqSection : ConfigurationSection
 	{
-		public static MsmqSection Open(string file)
-		{
-			return ShuttleConfigurationSection.Open<MsmqSection>("msmq", file);
-		}
-
 		[ConfigurationProperty("localQueueTimeoutMilliseconds", IsRequired = false, DefaultValue = 0)]
 		public int LocalQueueTimeoutMilliseconds
 		{
