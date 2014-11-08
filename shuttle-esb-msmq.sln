@@ -8,9 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{83D6D4AA-2D7A-4B1E-8D52-4DC70E51CE42}"
 	ProjectSection(SolutionItems) = preProject
 		.build\package.msbuild = .build\package.msbuild
-		.build\package.msbuild.old = .build\package.msbuild.old
 		.build\package.nuspec = .build\package.nuspec
-		.build\shuttle-esb-msmq.nuspec = .build\shuttle-esb-msmq.nuspec
 		.build\Shuttle.Core.MSBuild.dll = .build\Shuttle.Core.MSBuild.dll
 		.build\Shuttle.Core.MSBuild.targets = .build\Shuttle.Core.MSBuild.targets
 	EndProjectSection
