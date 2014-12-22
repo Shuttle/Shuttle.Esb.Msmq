@@ -22,5 +22,19 @@ namespace Shuttle.ESB.Msmq
 				return (int)this["remoteQueueTimeoutMilliseconds"];
 			}
 		}
+
+		public static MsmqConfiguration Configuration()
+		{
+			var section = ShuttleConfigurationSection.Open<MsmqSection>("msmq");
+			var configuration = new MsmqConfiguration();
+
+			if (section != null)
+			{
+				configuration.LocalQueueTimeoutMilliseconds = section.LocalQueueTimeoutMilliseconds;
+				configuration.RemoteQueueTimeoutMilliseconds = section.RemoteQueueTimeoutMilliseconds;
+			}
+
+			return configuration;
+		}
 	}
 }

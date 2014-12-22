@@ -9,7 +9,7 @@ namespace Shuttle.ESB.Msmq
 		public IMsmqConfiguration Configuration { get; private set; }
 
 		public MsmqQueueFactory()
-			: this(MsmqConfiguration.Default())
+			: this(MsmqSection.Configuration())
 		{
 		}
 
