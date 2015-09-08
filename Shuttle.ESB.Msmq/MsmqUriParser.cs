@@ -11,9 +11,6 @@ namespace Shuttle.ESB.Msmq
 	{
 		internal const string Scheme = "msmq";
 
-		private readonly string host;
-		private readonly bool usesIPAddress;
-
 		private readonly Regex regexIPAddress =
 			new Regex(
 				@"^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$");
@@ -29,7 +26,7 @@ namespace Shuttle.ESB.Msmq
 
 			var builder = new UriBuilder(uri);
 
-			host = uri.Host;
+			var host = uri.Host;
 
 			if (host.Equals("."))
 			{
@@ -46,7 +43,7 @@ namespace Shuttle.ESB.Msmq
 
 			Local = Uri.Host.Equals(Environment.MachineName, StringComparison.InvariantCultureIgnoreCase);
 
-			usesIPAddress = regexIPAddress.IsMatch(host);
+			var usesIPAddress = regexIPAddress.IsMatch(host);
 
 			Path = Local
 					   ? string.Format(@"{0}\private$\{1}", host, uri.Segments[1])
@@ -55,11 +52,35 @@ namespace Shuttle.ESB.Msmq
 							 : string.Format(@"FormatName:DIRECT=OS:{0}\private$\{1}", host, uri.Segments[1]);
 
 			JournalPath = string.Concat(Path, "$journal");
+
+			var parameters = HttpUtility.ParseQueryString(uri.Query);
+
+			SetUseDeadLetterQueue(parameters);
 		}
 
 		public Uri Uri { get; private set; }
 		public bool Local { get; private set; }
 		public string Path { get; private set; }
 		public string JournalPath { get; private set; }
+		public bool UseDeadLetterQueue { get; private set; }
+
+		private void SetUseDeadLetterQueue(NameValueCollection parameters)
+		{
+			UseDeadLetterQueue = true;
+
+			var parameter = parameters.Get("useDeadLetterQueue");
+
+			if (parameter == null)
+			{
+				return;
+			}
+
+			bool result;
+
+			if (bool.TryParse(parameter, out result))
+			{
+				UseDeadLetterQueue = result;
+			}
+		}
 	}
 }

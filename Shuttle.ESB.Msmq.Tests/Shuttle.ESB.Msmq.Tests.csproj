@@ -74,6 +74,7 @@
     <Compile Include="MsmqResourceUsageTest.cs" />
     <Compile Include="MsmqSection\MsmqSectionFixture.cs" />
     <Compile Include="MsmqSection\MsmqSectionTest.cs" />
+    <Compile Include="MsmqUriParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

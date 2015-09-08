@@ -84,6 +84,7 @@ namespace Shuttle.ESB.Msmq
 
 		public void Execute(OnSendJournalMessage pipelineEvent)
 		{
+			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
 			var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
 			var message = pipelineEvent.Pipeline.State.Get<Message>();
 
@@ -95,6 +96,7 @@ namespace Shuttle.ESB.Msmq
 			var journalMessage = new Message
 				{
 					Recoverable = true,
+					UseDeadLetterQueue = parser.UseDeadLetterQueue,
 					Label = message.Label,
 					CorrelationId = string.Format(@"{0}\1", message.Label),
 					BodyStream = message.BodyStream.Copy()

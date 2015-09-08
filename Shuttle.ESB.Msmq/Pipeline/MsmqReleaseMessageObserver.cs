@@ -55,6 +55,7 @@ namespace Shuttle.ESB.Msmq
 				var message = new Message
 					{
 						Recoverable = true,
+						UseDeadLetterQueue = parser.UseDeadLetterQueue,
 						Label = journalMessage.Label,
 						CorrelationId = string.Format(@"{0}\1", journalMessage.Label),
 						BodyStream = journalMessage.BodyStream.Copy()

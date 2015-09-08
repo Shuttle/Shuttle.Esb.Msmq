@@ -184,6 +184,7 @@ namespace Shuttle.ESB.Msmq
 			var sendMessage = new Message
 				{
 					Recoverable = true,
+					UseDeadLetterQueue = _parser.UseDeadLetterQueue,
 					Label = messageId.ToString(),
 					CorrelationId = string.Format(@"{0}\1", messageId),
 					BodyStream = stream
