@@ -1,5 +1,5 @@
 using System.Messaging;
-using Shuttle.ESB.Core;
+using Shuttle.Core.Infrastructure;
 
 namespace Shuttle.ESB.Msmq
 {
