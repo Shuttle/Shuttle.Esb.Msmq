@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Shuttle.Core.Infrastructure;
 using Shuttle.ESB.Core;
 
 namespace Shuttle.ESB.Msmq.Tests
@@ -8,7 +9,7 @@ namespace Shuttle.ESB.Msmq.Tests
     {
         protected MsmqSection GetMsmqSection(string file)
         {
-            return ShuttleConfigurationSection.Open<MsmqSection>("msmq", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"MsmqSection\files\{0}", file)));
+            return ConfigurationSectionProvider.OpenFile<MsmqSection>("shuttle", "msmq", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"MsmqSection\files\{0}", file)));
         }
     }
 }

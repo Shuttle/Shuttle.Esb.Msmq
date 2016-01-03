@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using Shuttle.Core.Infrastructure;
 using Shuttle.ESB.Core;
 
 namespace Shuttle.ESB.Msmq
@@ -25,7 +26,7 @@ namespace Shuttle.ESB.Msmq
 
 		public static MsmqConfiguration Configuration()
 		{
-			var section = ShuttleConfigurationSection.Open<MsmqSection>("msmq");
+			var section = ConfigurationSectionProvider.Open<MsmqSection>("shuttle", "msmq");
 			var configuration = new MsmqConfiguration();
 
 			if (section != null)
