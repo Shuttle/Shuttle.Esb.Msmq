@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.ESB.Msmq", "Shuttle.ESB.Msmq\Shuttle.ESB.Msmq.csproj", "{DD6566FD-824C-4275-B4EB-269B0FBC70A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq", "Shuttle.Esb.Msmq\Shuttle.Esb.Msmq.csproj", "{DD6566FD-824C-4275-B4EB-269B0FBC70A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.ESB.Msmq.Tests", "Shuttle.ESB.Msmq.Tests\Shuttle.ESB.Msmq.Tests.csproj", "{17E516E9-F372-452D-AEC7-7F7581919705}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq.Tests", "Shuttle.Esb.Msmq.Tests\Shuttle.Esb.Msmq.Tests.csproj", "{17E516E9-F372-452D-AEC7-7F7581919705}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{83D6D4AA-2D7A-4B1E-8D52-4DC70E51CE42}"
 	ProjectSection(SolutionItems) = preProject

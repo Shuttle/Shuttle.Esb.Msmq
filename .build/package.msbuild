@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<DeploymentFolder>deployment</DeploymentFolder>
 		<NuGetExecutablePath>..\.nuget\nuget.exe</NuGetExecutablePath>
-		<PackageAssembly>Shuttle.ESB.Msmq</PackageAssembly>
-		<PackageName>shuttle-esb-msmq</PackageName>
+		<PackageAssembly>Shuttle.Esb.Msmq</PackageAssembly>
+		<PackageName>Shuttle.Esb.Msmq</PackageName>
 	</PropertyGroup>
 
 	<Import Project="Shuttle.Core.MSBuild.targets" />
