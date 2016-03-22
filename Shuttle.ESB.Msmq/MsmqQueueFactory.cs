@@ -1,8 +1,7 @@
 using System;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqQueueFactory : IQueueFactory
 	{
@@ -20,10 +19,7 @@ namespace Shuttle.ESB.Msmq
 
 		public string Scheme
 		{
-			get
-			{
-				return MsmqUriParser.Scheme;
-			}
+			get { return MsmqUriParser.Scheme; }
 		}
 
 		public IQueue Create(Uri uri)

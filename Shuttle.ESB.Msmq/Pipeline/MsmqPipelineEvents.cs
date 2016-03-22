@@ -1,6 +1,6 @@
 ﻿using Shuttle.Core.Infrastructure;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class OnStart : PipelineEvent
 	{

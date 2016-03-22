@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Shuttle.ESB.Msmq.Tests
+namespace Shuttle.Esb.Msmq.Tests
 {
 	[TestFixture]
 	public class MsmqUriParserTest
@@ -35,7 +35,8 @@ namespace Shuttle.ESB.Msmq.Tests
 			Assert.AreEqual(string.Concat(dotPath, "$journal"), parser.JournalPath);
 			Assert.IsFalse(parser.UseDeadLetterQueue);
 
-			parser = new MsmqUriParser(new Uri(string.Format("msmq://{0}/the-queue?useDeadLetterQueue=true", Environment.MachineName)));
+			parser =
+				new MsmqUriParser(new Uri(string.Format("msmq://{0}/the-queue?useDeadLetterQueue=true", Environment.MachineName)));
 
 			Assert.IsTrue(parser.Local);
 			Assert.AreEqual(localPath, parser.Path);

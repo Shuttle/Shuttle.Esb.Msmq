@@ -1,4 +1,4 @@
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public interface IMsmqConfiguration
 	{

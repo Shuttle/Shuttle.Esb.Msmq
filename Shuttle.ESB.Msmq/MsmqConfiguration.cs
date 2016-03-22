@@ -1,6 +1,4 @@
-using System.Configuration;
-
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqConfiguration : IMsmqConfiguration
 	{

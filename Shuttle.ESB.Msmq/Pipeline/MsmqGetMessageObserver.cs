@@ -1,9 +1,8 @@
 using System;
 using System.Messaging;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqGetMessageObserver :
 		IPipelineObserver<OnStart>,
@@ -27,14 +26,14 @@ namespace Shuttle.ESB.Msmq
 			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
 
 			pipelineEvent.Pipeline.State.Add("queue", new MessageQueue(parser.Path)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				});
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			});
 
 			pipelineEvent.Pipeline.State.Add("journalQueue", new MessageQueue(parser.JournalPath)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				});
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			});
 		}
 
 		public void Execute(OnDispose pipelineEvent)
@@ -61,7 +60,9 @@ namespace Shuttle.ESB.Msmq
 
 			try
 			{
-				pipelineEvent.Pipeline.State.Add(pipelineEvent.Pipeline.State.Get<MessageQueue>("queue").Receive(pipelineEvent.Pipeline.State.Get<TimeSpan>("timeout"), tx));
+				pipelineEvent.Pipeline.State.Add(
+					pipelineEvent.Pipeline.State.Get<MessageQueue>("queue")
+						.Receive(pipelineEvent.Pipeline.State.Get<TimeSpan>("timeout"), tx));
 			}
 			catch (MessageQueueException ex)
 			{
@@ -94,13 +95,13 @@ namespace Shuttle.ESB.Msmq
 			}
 
 			var journalMessage = new Message
-				{
-					Recoverable = true,
-					UseDeadLetterQueue = parser.UseDeadLetterQueue,
-					Label = message.Label,
-					CorrelationId = string.Format(@"{0}\1", message.Label),
-					BodyStream = message.BodyStream.Copy()
-				};
+			{
+				Recoverable = true,
+				UseDeadLetterQueue = parser.UseDeadLetterQueue,
+				Label = message.Label,
+				CorrelationId = string.Format(@"{0}\1", message.Label),
+				BodyStream = message.BodyStream.Copy()
+			};
 
 			journalQueue.Send(journalMessage, pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>());
 		}

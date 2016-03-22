@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Shuttle.ESB.Msmq {
+namespace Shuttle.Esb.Msmq {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Shuttle.ESB.Msmq {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shuttle.ESB.Msmq.MsmqResources", typeof(MsmqResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shuttle.Esb.Msmq.MsmqResources", typeof(MsmqResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

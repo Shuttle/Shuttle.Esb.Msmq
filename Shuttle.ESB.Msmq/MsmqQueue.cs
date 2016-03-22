@@ -4,16 +4,15 @@ using System.IO;
 using System.Messaging;
 using System.Security.Principal;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqQueue : IQueue, ICreateQueue, IDropQueue, IPurgeQueue
 	{
 		private readonly TimeSpan _timeout;
 		private readonly MsmqUriParser _parser;
 		private readonly MessagePropertyFilter _messagePropertyFilter;
-		private readonly Type _msmqDequeuePipelineType = typeof(MsmqGetMessagePipeline);
+		private readonly Type _msmqDequeuePipelineType = typeof (MsmqGetMessagePipeline);
 		private readonly ReusableObjectPool<MsmqGetMessagePipeline> _dequeuePipelinePool;
 		private readonly object _padlock = new object();
 		private bool _journalInitialized;
@@ -30,8 +29,8 @@ namespace Shuttle.ESB.Msmq
 			_parser = new MsmqUriParser(uri);
 
 			_timeout = _parser.Local
-						   ? TimeSpan.FromMilliseconds(configuration.LocalQueueTimeoutMilliseconds)
-						   : TimeSpan.FromMilliseconds(configuration.RemoteQueueTimeoutMilliseconds);
+				? TimeSpan.FromMilliseconds(configuration.LocalQueueTimeoutMilliseconds)
+				: TimeSpan.FromMilliseconds(configuration.RemoteQueueTimeoutMilliseconds);
 
 			Uri = _parser.Uri;
 
@@ -46,10 +45,10 @@ namespace Shuttle.ESB.Msmq
 			lock (_padlock)
 			{
 				if (_journalInitialized
-					||
-					!Exists()
-					||
-					!JournalExists())
+				    ||
+				    !Exists()
+				    ||
+				    !JournalExists())
 				{
 					return;
 				}
@@ -182,13 +181,13 @@ namespace Shuttle.ESB.Msmq
 		public void Enqueue(Guid messageId, Stream stream)
 		{
 			var sendMessage = new Message
-				{
-					Recoverable = true,
-					UseDeadLetterQueue = _parser.UseDeadLetterQueue,
-					Label = messageId.ToString(),
-					CorrelationId = string.Format(@"{0}\1", messageId),
-					BodyStream = stream
-				};
+			{
+				Recoverable = true,
+				UseDeadLetterQueue = _parser.UseDeadLetterQueue,
+				Label = messageId.ToString(),
+				CorrelationId = string.Format(@"{0}\1", messageId),
+				BodyStream = stream
+			};
 
 			try
 			{
@@ -247,22 +246,22 @@ namespace Shuttle.ESB.Msmq
 		private MessageQueue CreateQueue()
 		{
 			return new MessageQueue(_parser.Path)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				};
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			};
 		}
 
 		private MessageQueue CreateJournalQueue()
 		{
 			return new MessageQueue(_parser.JournalPath)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				};
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			};
 		}
 
 		public void Acknowledge(object acknowledgementToken)
 		{
-			var messageId = (Guid)acknowledgementToken;
+			var messageId = (Guid) acknowledgementToken;
 
 			try
 			{
@@ -296,13 +295,13 @@ namespace Shuttle.ESB.Msmq
 		public void Release(object acknowledgementToken)
 		{
 			if (!Exists()
-				||
-				!JournalExists())
+			    ||
+			    !JournalExists())
 			{
 				return;
 			}
 
-			new MsmqReleaseMessagePipeline().Execute((Guid)acknowledgementToken, _parser, _timeout);
+			new MsmqReleaseMessagePipeline().Execute((Guid) acknowledgementToken, _parser, _timeout);
 		}
 
 		public static void AccessDenied(ILog log, string path)

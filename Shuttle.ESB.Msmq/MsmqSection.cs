@@ -1,27 +1,20 @@
 ﻿using System.Configuration;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqSection : ConfigurationSection
 	{
 		[ConfigurationProperty("localQueueTimeoutMilliseconds", IsRequired = false, DefaultValue = 0)]
 		public int LocalQueueTimeoutMilliseconds
 		{
-			get
-			{
-				return (int)this["localQueueTimeoutMilliseconds"];
-			}
+			get { return (int) this["localQueueTimeoutMilliseconds"]; }
 		}
 
 		[ConfigurationProperty("remoteQueueTimeoutMilliseconds", IsRequired = false, DefaultValue = 2000)]
 		public int RemoteQueueTimeoutMilliseconds
 		{
-			get
-			{
-				return (int)this["remoteQueueTimeoutMilliseconds"];
-			}
+			get { return (int) this["remoteQueueTimeoutMilliseconds"]; }
 		}
 
 		public static MsmqConfiguration Configuration()

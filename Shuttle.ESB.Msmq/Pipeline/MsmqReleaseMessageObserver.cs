@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Messaging;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqReleaseMessageObserver :
 		IPipelineObserver<OnReleaseMessage>,
@@ -25,14 +24,14 @@ namespace Shuttle.ESB.Msmq
 			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
 
 			pipelineEvent.Pipeline.State.Add("queue", new MessageQueue(parser.Path)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				});
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			});
 
 			pipelineEvent.Pipeline.State.Add("journalQueue", new MessageQueue(parser.JournalPath)
-				{
-					MessageReadPropertyFilter = _messagePropertyFilter
-				});
+			{
+				MessageReadPropertyFilter = _messagePropertyFilter
+			});
 		}
 
 		public void Execute(OnReleaseMessage pipelineEvent)
@@ -53,13 +52,13 @@ namespace Shuttle.ESB.Msmq
 				}
 
 				var message = new Message
-					{
-						Recoverable = true,
-						UseDeadLetterQueue = parser.UseDeadLetterQueue,
-						Label = journalMessage.Label,
-						CorrelationId = string.Format(@"{0}\1", journalMessage.Label),
-						BodyStream = journalMessage.BodyStream.Copy()
-					};
+				{
+					Recoverable = true,
+					UseDeadLetterQueue = parser.UseDeadLetterQueue,
+					Label = journalMessage.Label,
+					CorrelationId = string.Format(@"{0}\1", journalMessage.Label),
+					BodyStream = journalMessage.BodyStream.Copy()
+				};
 
 				queue.Send(message, tx);
 			}

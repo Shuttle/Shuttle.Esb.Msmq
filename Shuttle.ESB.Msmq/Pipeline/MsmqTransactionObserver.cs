@@ -1,7 +1,7 @@
 using System.Messaging;
 using Shuttle.Core.Infrastructure;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqTransactionObserver :
 		IPipelineObserver<OnStart>,

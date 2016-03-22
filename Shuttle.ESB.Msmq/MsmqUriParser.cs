@@ -3,9 +3,8 @@ using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Web;
 using Shuttle.Core.Infrastructure;
-using Shuttle.ESB.Core;
 
-namespace Shuttle.ESB.Msmq
+namespace Shuttle.Esb.Msmq
 {
 	public class MsmqUriParser
 	{
@@ -36,7 +35,7 @@ namespace Shuttle.ESB.Msmq
 			if (uri.LocalPath == "/")
 			{
 				throw new UriFormatException(string.Format(ESBResources.UriFormatException, "msmq://{{host-name}}/{{queue-name}}",
-														   uri));
+					uri));
 			}
 
 			Uri = builder.Uri;
@@ -46,10 +45,10 @@ namespace Shuttle.ESB.Msmq
 			var usesIPAddress = regexIPAddress.IsMatch(host);
 
 			Path = Local
-					   ? string.Format(@"{0}\private$\{1}", host, uri.Segments[1])
-					   : usesIPAddress
-							 ? string.Format(@"FormatName:DIRECT=TCP:{0}\private$\{1}", host, uri.Segments[1])
-							 : string.Format(@"FormatName:DIRECT=OS:{0}\private$\{1}", host, uri.Segments[1]);
+				? string.Format(@"{0}\private$\{1}", host, uri.Segments[1])
+				: usesIPAddress
+					? string.Format(@"FormatName:DIRECT=TCP:{0}\private$\{1}", host, uri.Segments[1])
+					: string.Format(@"FormatName:DIRECT=OS:{0}\private$\{1}", host, uri.Segments[1]);
 
 			JournalPath = string.Concat(Path, "$journal");
 

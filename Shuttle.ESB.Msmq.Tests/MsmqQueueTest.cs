@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using Shuttle.ESB.Tests;
+using Shuttle.Esb.Tests;
 
-namespace Shuttle.ESB.Msmq.Tests
+namespace Shuttle.Esb.Msmq.Tests
 {
 	[TestFixture]
 	public class MsmqQueueTest : BasicQueueFixture
