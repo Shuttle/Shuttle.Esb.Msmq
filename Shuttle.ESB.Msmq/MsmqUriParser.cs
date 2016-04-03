@@ -34,7 +34,7 @@ namespace Shuttle.Esb.Msmq
 
 			if (uri.LocalPath == "/")
 			{
-				throw new UriFormatException(string.Format(ESBResources.UriFormatException, "msmq://{{host-name}}/{{queue-name}}",
+				throw new UriFormatException(string.Format(EsbResources.UriFormatException, "msmq://{{host-name}}/{{queue-name}}",
 					uri));
 			}
 
