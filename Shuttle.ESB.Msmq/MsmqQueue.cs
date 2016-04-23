@@ -178,16 +178,26 @@ namespace Shuttle.Esb.Msmq
 			}
 		}
 
-		public void Enqueue(Guid messageId, Stream stream)
+		public void Enqueue(TransportMessage transportMessage, Stream stream)
 		{
 			var sendMessage = new Message
 			{
 				Recoverable = true,
 				UseDeadLetterQueue = _parser.UseDeadLetterQueue,
-				Label = messageId.ToString(),
-				CorrelationId = string.Format(@"{0}\1", messageId),
+				Label = transportMessage.MessageId.ToString(),
+				CorrelationId = string.Format(@"{0}\1", transportMessage.MessageId),
 				BodyStream = stream
 			};
+
+			if (transportMessage.HasExpired())
+			{
+				return;
+			}
+
+			if (transportMessage.HasExpiryDate())
+			{
+				sendMessage.TimeToBeReceived = transportMessage.ExpiryDate - DateTime.Now;
+			}
 
 			try
 			{
@@ -203,13 +213,13 @@ namespace Shuttle.Esb.Msmq
 					AccessDenied(_log, _parser.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.SendMessageIdError, messageId, Uri, ex.AllMessages()));
+				_log.Error(string.Format(MsmqResources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
 
 				throw;
 			}
 			catch (Exception ex)
 			{
-				_log.Error(string.Format(MsmqResources.SendMessageIdError, messageId, Uri, ex.AllMessages()));
+				_log.Error(string.Format(MsmqResources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
 
 				throw;
 			}

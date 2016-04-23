@@ -34,5 +34,11 @@ namespace Shuttle.Esb.Msmq.Tests
 		{
 			TestInboxDeferred("msmq://./{0}");
 		}
+
+		[Test]
+		public void Should_be_able_to_expire_a_message()
+		{
+			TestInboxExpiry("msmq://./{0}", true);
+		}
 	}
 }
