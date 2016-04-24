@@ -9,6 +9,7 @@ namespace Shuttle.Esb.Msmq
 {
 	public class MsmqQueue : IQueue, ICreateQueue, IDropQueue, IPurgeQueue
 	{
+		private readonly  TimeSpan _millisecondTimeSpan = TimeSpan.FromMilliseconds(1);
 		private readonly TimeSpan _timeout;
 		private readonly MsmqUriParser _parser;
 		private readonly MessagePropertyFilter _messagePropertyFilter;
@@ -180,7 +181,9 @@ namespace Shuttle.Esb.Msmq
 
 		public void Enqueue(TransportMessage transportMessage, Stream stream)
 		{
-			if (transportMessage.HasExpired())
+			var timeToBeReceived = transportMessage.ExpiryDate - DateTime.Now;
+
+			if (transportMessage.HasExpired() || (timeToBeReceived < _millisecondTimeSpan))
 			{
 				return;
 			}
@@ -196,7 +199,7 @@ namespace Shuttle.Esb.Msmq
 
 			if (transportMessage.HasExpiryDate())
 			{
-				sendMessage.TimeToBeReceived = transportMessage.ExpiryDate - DateTime.Now;
+				sendMessage.TimeToBeReceived = timeToBeReceived;
 			}
 
 			try
