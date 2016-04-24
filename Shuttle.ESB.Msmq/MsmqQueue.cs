@@ -180,6 +180,11 @@ namespace Shuttle.Esb.Msmq
 
 		public void Enqueue(TransportMessage transportMessage, Stream stream)
 		{
+			if (transportMessage.HasExpired())
+			{
+				return;
+			}
+
 			var sendMessage = new Message
 			{
 				Recoverable = true,
@@ -188,11 +193,6 @@ namespace Shuttle.Esb.Msmq
 				CorrelationId = string.Format(@"{0}\1", transportMessage.MessageId),
 				BodyStream = stream
 			};
-
-			if (transportMessage.HasExpired())
-			{
-				return;
-			}
 
 			if (transportMessage.HasExpiryDate())
 			{

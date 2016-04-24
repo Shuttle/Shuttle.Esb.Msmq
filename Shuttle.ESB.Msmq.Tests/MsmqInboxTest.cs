@@ -38,7 +38,7 @@ namespace Shuttle.Esb.Msmq.Tests
 		[Test]
 		public void Should_be_able_to_expire_a_message()
 		{
-			TestInboxExpiry("msmq://./{0}", true);
+			TestInboxExpiry("msmq://./{0}");
 		}
 	}
 }
