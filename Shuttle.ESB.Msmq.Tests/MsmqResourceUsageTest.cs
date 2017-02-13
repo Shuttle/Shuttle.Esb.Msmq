@@ -10,7 +10,7 @@ namespace Shuttle.Esb.Msmq.Tests
 		[TestCase(true)]
 		public void Should_not_exceeed_normal_resource_usage(bool isTransactionalEndpoint)
 		{
-			TestResourceUsage("msmq://./{0}", isTransactionalEndpoint);
+			TestResourceUsage(MsmqFixture.GetComponentContainer(), "msmq://./{0}", isTransactionalEndpoint);
 		}
 	}
 }

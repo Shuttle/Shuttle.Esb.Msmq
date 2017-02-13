@@ -26,10 +26,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Shuttle.Esb.Msmq for .NET Framework 4.6.1")]
 #endif
 
-[assembly: AssemblyVersion("6.0.3.0")]
-[assembly: AssemblyCopyright("Copyright © Eben Roux 2016")]
+[assembly: AssemblyVersion("6.0.5.0")]
+[assembly: AssemblyCopyright("Copyright © Eben Roux 2017")]
 [assembly: AssemblyProduct("Shuttle.Esb")]
 [assembly: AssemblyCompany("Shuttle")]
 [assembly: AssemblyConfiguration("Release")]
-[assembly: AssemblyInformationalVersion("6.0.3")]
+[assembly: AssemblyInformationalVersion("6.0.5")]
 [assembly: ComVisible(false)]
