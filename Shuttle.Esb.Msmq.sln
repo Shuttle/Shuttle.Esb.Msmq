@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq", "Shuttle.Esb.Msmq\Shuttle.Esb.Msmq.csproj", "{DD6566FD-824C-4275-B4EB-269B0FBC70A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq.Tests", "Shuttle.Esb.Msmq.Tests\Shuttle.Esb.Msmq.Tests.csproj", "{17E516E9-F372-452D-AEC7-7F7581919705}"
