@@ -2,7 +2,7 @@
 
 namespace Shuttle.Esb.Msmq
 {
-	public class MsmqBootstrap : IComponentRegistryBootstrap
+	public class Bootstrap : IComponentRegistryBootstrap
 	{
 		public void Register(IComponentRegistry registry)
 		{

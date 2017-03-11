@@ -102,7 +102,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MsmqBootstrap.cs" />
+    <Compile Include="Bootstrap.cs" />
     <Compile Include="Pipeline\MsmqReleaseMessageObserver.cs" />
     <Compile Include="Pipeline\MsmqReleaseMessagePipeline.cs" />
     <Compile Include="Pipeline\MsmqReturnJournalObserver.cs" />
