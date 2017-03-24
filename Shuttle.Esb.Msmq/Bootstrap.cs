@@ -6,6 +6,8 @@ namespace Shuttle.Esb.Msmq
 	{
 		public void Register(IComponentRegistry registry)
 		{
+			Guard.AgainstNull(registry, "registry");
+
 			if (!registry.IsRegistered<IMsmqConfiguration>())
 			{
 				registry.Register<IMsmqConfiguration, MsmqConfiguration>();
