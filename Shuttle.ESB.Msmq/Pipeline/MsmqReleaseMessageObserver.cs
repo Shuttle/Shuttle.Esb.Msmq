@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Messaging;
-using Shuttle.Core.Infrastructure;
+using Shuttle.Core.Logging;
+using Shuttle.Core.Pipelines;
+using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.Msmq
 {
@@ -56,7 +58,7 @@ namespace Shuttle.Esb.Msmq
 					Recoverable = true,
 					UseDeadLetterQueue = parser.UseDeadLetterQueue,
 					Label = journalMessage.Label,
-					CorrelationId = string.Format(@"{0}\1", journalMessage.Label),
+					CorrelationId = $@"{journalMessage.Label}\1",
 					BodyStream = journalMessage.BodyStream.Copy()
 				};
 
@@ -69,7 +71,7 @@ namespace Shuttle.Esb.Msmq
 					MsmqQueue.AccessDenied(_log, parser.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.GetMessageError, parser.Path, ex.Message));
+				_log.Error(string.Format(Resources.GetMessageError, parser.Path, ex.Message));
 
 				throw;
 			}
@@ -79,7 +81,7 @@ namespace Shuttle.Esb.Msmq
 		{
 			try
 			{
-				return journalQueue.ReceiveByCorrelationId(string.Format(@"{0}\1", messageId), timeout, tx);
+				return journalQueue.ReceiveByCorrelationId($@"{messageId}\1", timeout, tx);
 			}
 			catch (MessageQueueException ex)
 			{
@@ -93,7 +95,7 @@ namespace Shuttle.Esb.Msmq
 					MsmqQueue.AccessDenied(_log, journalQueue.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.GetMessageError, journalQueue.Path, ex.Message));
+				_log.Error(string.Format(Resources.GetMessageError, journalQueue.Path, ex.Message));
 
 				throw;
 			}

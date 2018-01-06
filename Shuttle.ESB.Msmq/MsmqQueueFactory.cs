@@ -1,34 +1,31 @@
 using System;
-using Shuttle.Core.Infrastructure;
+using Shuttle.Core.Contract;
 
 namespace Shuttle.Esb.Msmq
 {
-	public class MsmqQueueFactory : IQueueFactory
-	{
-		public IMsmqConfiguration Configuration { get; private set; }
+    public class MsmqQueueFactory : IQueueFactory
+    {
+        public MsmqQueueFactory(IMsmqConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public MsmqQueueFactory(IMsmqConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+        public IMsmqConfiguration Configuration { get; }
 
-		public string Scheme
-		{
-			get { return MsmqUriParser.Scheme; }
-		}
+        public string Scheme => MsmqUriParser.Scheme;
 
-		public IQueue Create(Uri uri)
-		{
-			Guard.AgainstNull(uri, "uri");
+        public IQueue Create(Uri uri)
+        {
+            Guard.AgainstNull(uri, "uri");
 
-			return new MsmqQueue(uri, Configuration);
-		}
+            return new MsmqQueue(uri, Configuration);
+        }
 
-		public bool CanCreate(Uri uri)
-		{
-			Guard.AgainstNull(uri, "uri");
+        public bool CanCreate(Uri uri)
+        {
+            Guard.AgainstNull(uri, "uri");
 
-			return Scheme.Equals(uri.Scheme, StringComparison.InvariantCultureIgnoreCase);
-		}
-	}
+            return Scheme.Equals(uri.Scheme, StringComparison.InvariantCultureIgnoreCase);
+        }
+    }
 }

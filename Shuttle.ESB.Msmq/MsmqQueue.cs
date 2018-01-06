@@ -3,7 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Messaging;
 using System.Security.Principal;
-using Shuttle.Core.Infrastructure;
+using Shuttle.Core.Contract;
+using Shuttle.Core.Logging;
+using Shuttle.Core.Pipelines;
+using Shuttle.Core.Reflection;
 
 namespace Shuttle.Esb.Msmq
 {
@@ -71,12 +74,12 @@ namespace Shuttle.Esb.Msmq
 
 			if (!_parser.Local)
 			{
-				throw new InvalidOperationException(string.Format(MsmqResources.CannotCreateRemoteQueue, Uri));
+				throw new InvalidOperationException(string.Format(Resources.CannotCreateRemoteQueue, Uri));
 			}
 
 			MessageQueue.Create(_parser.Path, true).Dispose();
 
-			_log.Information(string.Format(MsmqResources.QueueCreated, _parser.Path));
+			_log.Information(string.Format(Resources.QueueCreated, _parser.Path));
 		}
 
 		private void CreateJournal()
@@ -88,12 +91,12 @@ namespace Shuttle.Esb.Msmq
 
 			if (!_parser.Local)
 			{
-				throw new InvalidOperationException(string.Format(MsmqResources.CannotCreateRemoteQueue, Uri));
+				throw new InvalidOperationException(string.Format(Resources.CannotCreateRemoteQueue, Uri));
 			}
 
 			MessageQueue.Create(_parser.JournalPath, true).Dispose();
 
-			_log.Information(string.Format(MsmqResources.QueueCreated, _parser.Path));
+			_log.Information(string.Format(Resources.QueueCreated, _parser.Path));
 		}
 
 		public void Drop()
@@ -107,12 +110,12 @@ namespace Shuttle.Esb.Msmq
 
 			if (!_parser.Local)
 			{
-				throw new InvalidOperationException(string.Format(MsmqResources.CannotDropRemoteQueue, Uri));
+				throw new InvalidOperationException(string.Format(Resources.CannotDropRemoteQueue, Uri));
 			}
 
 			MessageQueue.Delete(_parser.Path);
 
-			_log.Information(string.Format(MsmqResources.QueueDropped, _parser.Path));
+			_log.Information(string.Format(Resources.QueueDropped, _parser.Path));
 		}
 
 		private void DropJournal()
@@ -124,12 +127,12 @@ namespace Shuttle.Esb.Msmq
 
 			if (!_parser.Local)
 			{
-				throw new InvalidOperationException(string.Format(MsmqResources.CannotDropRemoteQueue, Uri));
+				throw new InvalidOperationException(string.Format(Resources.CannotDropRemoteQueue, Uri));
 			}
 
 			MessageQueue.Delete(_parser.JournalPath);
 
-			_log.Information(string.Format(MsmqResources.QueueDropped, _parser.JournalPath));
+			_log.Information(string.Format(Resources.QueueDropped, _parser.JournalPath));
 		}
 
 		public void Purge()
@@ -139,10 +142,10 @@ namespace Shuttle.Esb.Msmq
 				queue.Purge();
 			}
 
-			_log.Information(string.Format(MsmqResources.QueuePurged, _parser.Path));
+			_log.Information(string.Format(Resources.QueuePurged, _parser.Path));
 		}
 
-		public Uri Uri { get; private set; }
+		public Uri Uri { get; }
 
 		private bool Exists()
 		{
@@ -193,7 +196,7 @@ namespace Shuttle.Esb.Msmq
 				Recoverable = true,
 				UseDeadLetterQueue = _parser.UseDeadLetterQueue,
 				Label = transportMessage.MessageId.ToString(),
-				CorrelationId = string.Format(@"{0}\1", transportMessage.MessageId),
+				CorrelationId = $@"{transportMessage.MessageId}\1",
 				BodyStream = stream
 			};
 
@@ -216,13 +219,13 @@ namespace Shuttle.Esb.Msmq
 					AccessDenied(_log, _parser.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
+				_log.Error(string.Format(Resources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
 
 				throw;
 			}
 			catch (Exception ex)
 			{
-				_log.Error(string.Format(MsmqResources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
+				_log.Error(string.Format(Resources.SendMessageIdError, transportMessage.MessageId, Uri, ex.AllMessages()));
 
 				throw;
 			}
@@ -250,7 +253,7 @@ namespace Shuttle.Esb.Msmq
 			}
 			catch (Exception ex)
 			{
-				_log.Error(string.Format(MsmqResources.GetMessageError, _parser.Path, ex.AllMessages()));
+				_log.Error(string.Format(Resources.GetMessageError, _parser.Path, ex.AllMessages()));
 
 				throw;
 			}
@@ -282,7 +285,7 @@ namespace Shuttle.Esb.Msmq
 				{
 					using (var queue = CreateJournalQueue())
 					{
-						queue.ReceiveByCorrelationId(string.Format(@"{0}\1", messageId), MessageQueueTransactionType.Single);
+						queue.ReceiveByCorrelationId($@"{messageId}\1", MessageQueueTransactionType.Single);
 					}
 				}
 			}
@@ -293,13 +296,13 @@ namespace Shuttle.Esb.Msmq
 					AccessDenied(_log, _parser.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
+				_log.Error(string.Format(Resources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
 
 				throw;
 			}
 			catch (Exception ex)
 			{
-				_log.Error(string.Format(MsmqResources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
+				_log.Error(string.Format(Resources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
 
 				throw;
 			}
@@ -324,10 +327,8 @@ namespace Shuttle.Esb.Msmq
 
 			log.Fatal(
 				string.Format(
-					MsmqResources.AccessDenied,
-					WindowsIdentity.GetCurrent() != null
-						? WindowsIdentity.GetCurrent().Name
-						: MsmqResources.Unknown,
+					Resources.AccessDenied,
+					 WindowsIdentity.GetCurrent().Name,
 					path));
 
 			if (Environment.UserInteractive)

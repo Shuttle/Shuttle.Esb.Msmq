@@ -1,6 +1,8 @@
 using System;
 using System.Messaging;
-using Shuttle.Core.Infrastructure;
+using Shuttle.Core.Logging;
+using Shuttle.Core.Pipelines;
+using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.Msmq
 {
@@ -40,17 +42,11 @@ namespace Shuttle.Esb.Msmq
 		{
 			var queue = pipelineEvent.Pipeline.State.Get<MessageQueue>("queue");
 
-			if (queue != null)
-			{
-				queue.Dispose();
-			}
+		    queue?.Dispose();
 
-			var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
+		    var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
 
-			if (journalQueue != null)
-			{
-				journalQueue.Dispose();
-			}
+		    journalQueue?.Dispose();
 		}
 
 		public void Execute(OnReceiveMessage pipelineEvent)
@@ -77,7 +73,7 @@ namespace Shuttle.Esb.Msmq
 					MsmqQueue.AccessDenied(_log, parser.Path);
 				}
 
-				_log.Error(string.Format(MsmqResources.GetMessageError, parser.Uri, ex.Message));
+				_log.Error(string.Format(Resources.GetMessageError, parser.Uri, ex.Message));
 
 				throw;
 			}
@@ -99,7 +95,7 @@ namespace Shuttle.Esb.Msmq
 				Recoverable = true,
 				UseDeadLetterQueue = parser.UseDeadLetterQueue,
 				Label = message.Label,
-				CorrelationId = string.Format(@"{0}\1", message.Label),
+				CorrelationId = $@"{message.Label}\1",
 				BodyStream = message.BodyStream.Copy()
 			};
 
