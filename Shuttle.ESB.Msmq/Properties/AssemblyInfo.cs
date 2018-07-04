@@ -1,10 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-#if NET46
-[assembly: AssemblyTitle(".NET Framework 4.6")]
-#endif
-
 #if NET461
 [assembly: AssemblyTitle(".NET Framework 4.6.1")]
 #endif
@@ -21,18 +17,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle(".NET Framework 4.7.1")]
 #endif
 
-#if NETCOREAPP2_0
-[assembly: AssemblyTitle(".NET Core 2.0")]
-#endif
-
-#if NETSTANDARD2_0
-[assembly: AssemblyTitle(".NET Standard 2.0")]
-#endif
-
-[assembly: AssemblyVersion("10.0.2.0")]
+[assembly: AssemblyVersion("10.0.3.0")]
 [assembly: AssemblyCopyright("Copyright © Eben Roux 2018")]
 [assembly: AssemblyProduct("Shuttle.Esb.Msmq")]
 [assembly: AssemblyCompany("Shuttle")]
 [assembly: AssemblyConfiguration("Release")]
-[assembly: AssemblyInformationalVersion("10.0.2")]
+[assembly: AssemblyInformationalVersion("10.0.3")]
 [assembly: ComVisible(false)]

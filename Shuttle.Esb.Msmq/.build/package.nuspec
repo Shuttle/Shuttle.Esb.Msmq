@@ -9,6 +9,7 @@
     <licenseUrl>https://github.com/shuttle/Shuttle.Esb.Msmq/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/shuttle/Shuttle.Esb.Msmq</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Shuttle/Shuttle.Esb.Msmq/master/.media/logo.png</iconUrl>
+    <repository type="git" url="https://github.com/Shuttle/Shuttle.Esb.Msmq.git" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Msmq implementation for use with Shuttle.Esb.</description>
     <releaseNotes />
