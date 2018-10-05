@@ -205,6 +205,17 @@ namespace Shuttle.Esb.Msmq
 				sendMessage.TimeToBeReceived = timeToBeReceived;
 			}
 
+		    if (transportMessage.HasPriority())
+		    {
+		        var priority = (MessagePriority) transportMessage.Priority;
+		        if (priority > MessagePriority.Highest)
+		        {
+		            priority = MessagePriority.Highest;
+		        }
+
+		        sendMessage.Priority = priority;
+		    }
+
 			try
 			{
 				using (var queue = CreateQueue())
