@@ -6,100 +6,100 @@ using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.Msmq
 {
-	public class MsmqGetMessageObserver :
-		IPipelineObserver<OnStart>,
-		IPipelineObserver<OnReceiveMessage>,
-		IPipelineObserver<OnSendJournalMessage>,
-		IPipelineObserver<OnDispose>
-	{
-		private readonly MessagePropertyFilter _messagePropertyFilter;
-		private readonly ILog _log;
+    public class MsmqGetMessageObserver :
+        IPipelineObserver<OnStart>,
+        IPipelineObserver<OnReceiveMessage>,
+        IPipelineObserver<OnSendJournalMessage>,
+        IPipelineObserver<OnDispose>
+    {
+        private readonly ILog _log;
+        private readonly MessagePropertyFilter _messagePropertyFilter;
 
-		public MsmqGetMessageObserver()
-		{
-			_messagePropertyFilter = new MessagePropertyFilter();
-			_messagePropertyFilter.SetAll();
+        public MsmqGetMessageObserver()
+        {
+            _messagePropertyFilter = new MessagePropertyFilter();
+            _messagePropertyFilter.SetAll();
 
-			_log = Log.For(this);
-		}
+            _log = Log.For(this);
+        }
 
-		public void Execute(OnStart pipelineEvent)
-		{
-			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
+        public void Execute(OnDispose pipelineEvent)
+        {
+            var queue = pipelineEvent.Pipeline.State.Get<MessageQueue>("queue");
 
-			pipelineEvent.Pipeline.State.Add("queue", new MessageQueue(parser.Path)
-			{
-				MessageReadPropertyFilter = _messagePropertyFilter
-			});
+            queue?.Dispose();
 
-			pipelineEvent.Pipeline.State.Add("journalQueue", new MessageQueue(parser.JournalPath)
-			{
-				MessageReadPropertyFilter = _messagePropertyFilter
-			});
-		}
+            var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
 
-		public void Execute(OnDispose pipelineEvent)
-		{
-			var queue = pipelineEvent.Pipeline.State.Get<MessageQueue>("queue");
+            journalQueue?.Dispose();
+        }
 
-		    queue?.Dispose();
+        public void Execute(OnReceiveMessage pipelineEvent)
+        {
+            var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
+            var tx = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
 
-		    var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
+            try
+            {
+                pipelineEvent.Pipeline.State.Add(
+                    pipelineEvent.Pipeline.State.Get<MessageQueue>("queue")
+                        .Receive(pipelineEvent.Pipeline.State.Get<TimeSpan>("timeout"), tx));
+            }
+            catch (MessageQueueException ex)
+            {
+                if (ex.MessageQueueErrorCode == MessageQueueErrorCode.IOTimeout)
+                {
+                    pipelineEvent.Pipeline.State.Add<Message>(null);
+                    return;
+                }
 
-		    journalQueue?.Dispose();
-		}
+                if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
+                {
+                    MsmqQueue.AccessDenied(_log, parser.Path);
+                }
 
-		public void Execute(OnReceiveMessage pipelineEvent)
-		{
-			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
-			var tx = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
+                _log.Error(string.Format(Resources.GetMessageError, parser.Uri, ex.Message));
 
-			try
-			{
-				pipelineEvent.Pipeline.State.Add(
-					pipelineEvent.Pipeline.State.Get<MessageQueue>("queue")
-						.Receive(pipelineEvent.Pipeline.State.Get<TimeSpan>("timeout"), tx));
-			}
-			catch (MessageQueueException ex)
-			{
-				if (ex.MessageQueueErrorCode == MessageQueueErrorCode.IOTimeout)
-				{
-					pipelineEvent.Pipeline.State.Add<Message>(null);
-					return;
-				}
+                throw;
+            }
+        }
 
-				if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
-				{
-					MsmqQueue.AccessDenied(_log, parser.Path);
-				}
+        public void Execute(OnSendJournalMessage pipelineEvent)
+        {
+            var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
+            var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
+            var message = pipelineEvent.Pipeline.State.Get<Message>();
 
-				_log.Error(string.Format(Resources.GetMessageError, parser.Uri, ex.Message));
+            if (journalQueue == null || message == null)
+            {
+                return;
+            }
 
-				throw;
-			}
-		}
+            var journalMessage = new Message
+            {
+                Recoverable = true,
+                UseDeadLetterQueue = parser.UseDeadLetterQueue,
+                Label = message.Label,
+                CorrelationId = $@"{message.Label}\1",
+                BodyStream = message.BodyStream.Copy()
+            };
 
-		public void Execute(OnSendJournalMessage pipelineEvent)
-		{
-			var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
-			var journalQueue = pipelineEvent.Pipeline.State.Get<MessageQueue>("journalQueue");
-			var message = pipelineEvent.Pipeline.State.Get<Message>();
+            journalQueue.Send(journalMessage, pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>());
+        }
 
-			if (journalQueue == null || message == null)
-			{
-				return;
-			}
+        public void Execute(OnStart pipelineEvent)
+        {
+            var parser = pipelineEvent.Pipeline.State.Get<MsmqUriParser>();
 
-			var journalMessage = new Message
-			{
-				Recoverable = true,
-				UseDeadLetterQueue = parser.UseDeadLetterQueue,
-				Label = message.Label,
-				CorrelationId = $@"{message.Label}\1",
-				BodyStream = message.BodyStream.Copy()
-			};
+            pipelineEvent.Pipeline.State.Add("queue", new MessageQueue(parser.Path)
+            {
+                MessageReadPropertyFilter = _messagePropertyFilter
+            });
 
-			journalQueue.Send(journalMessage, pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>());
-		}
-	}
+            pipelineEvent.Pipeline.State.Add("journalQueue", new MessageQueue(parser.JournalPath)
+            {
+                MessageReadPropertyFilter = _messagePropertyFilter
+            });
+        }
+    }
 }
