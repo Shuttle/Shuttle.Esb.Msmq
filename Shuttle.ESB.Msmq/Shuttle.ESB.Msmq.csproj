@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;net462;net47;net471</TargetFrameworks>
+    <TargetFrameworks>net461;</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shuttle.Core.Container" Version="10.0.9" />
+    <PackageReference Include="Shuttle.Core.Container" Version="11.0.0" />
     <PackageReference Include="Shuttle.Core.Contract" Version="10.0.1" />
     <PackageReference Include="Shuttle.Core.Uris" Version="10.0.4" />
-    <PackageReference Include="Shuttle.Esb" Version="10.1.2" />
+    <PackageReference Include="Shuttle.Esb" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
