@@ -9,7 +9,7 @@ namespace Shuttle.Esb.Msmq
     {
         internal const string Scheme = "msmq";
 
-        private readonly Regex regexIPAddress =
+        private readonly Regex _regexIpAddress =
             new Regex(
                 @"^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$");
 
@@ -23,7 +23,6 @@ namespace Shuttle.Esb.Msmq
             }
 
             var builder = new UriBuilder(uri);
-
             var host = uri.Host;
 
             if (host.Equals("."))
@@ -41,7 +40,7 @@ namespace Shuttle.Esb.Msmq
 
             Local = Uri.Host.Equals(Environment.MachineName, StringComparison.InvariantCultureIgnoreCase);
 
-            var usesIPAddress = regexIPAddress.IsMatch(host);
+            var usesIPAddress = _regexIpAddress.IsMatch(host);
 
             Path = Local
                 ? $@"{host}\private$\{uri.Segments[1]}"
