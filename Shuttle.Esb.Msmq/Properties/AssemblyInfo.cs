@@ -17,10 +17,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle(".NET Framework 4.7.1")]
 #endif
 
-[assembly: AssemblyVersion("11.0.0.0")]
+[assembly: AssemblyVersion("11.0.1.0")]
 [assembly: AssemblyCopyright("Copyright © Eben Roux 2019")]
 [assembly: AssemblyProduct("Shuttle.Esb.Msmq")]
 [assembly: AssemblyCompany("Shuttle")]
 [assembly: AssemblyConfiguration("Release")]
-[assembly: AssemblyInformationalVersion("11.0.0")]
+[assembly: AssemblyInformationalVersion("11.0.1")]
 [assembly: ComVisible(false)]
