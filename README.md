@@ -1,5 +1,4 @@
-Shuttle.Esb.Msmq
-================
+# Shuttle.Esb.Msmq
 
 Msmq implementation for use with Shuttle.Esb.
 
@@ -17,14 +16,14 @@ You need to install / activate msmq on your system before using this queuing opt
 
 The queue configuration is part of the specified uri, e.g.:
 
-~~~xml
+``` xml
     <inbox
       workQueueUri="msmq://host/queue?useDeadLetterQueue=true"
 	  .
 	  .
 	  .
     />
-~~~
+``` 
 
 | Segment / Argument | Default	| Description | Version Introduced |
 | --- | --- | --- | --- |
@@ -34,7 +33,7 @@ By default the `MsmqQueue` is a transactional queue that utilizes a journal queu
 
 In addition to this there is also a Msmq specific section (defaults specified here):
 
-~~~xml
+``` xml
 <configuration>
   <configSections>
     <section name='msmq' type="Shuttle.Esb.Msmq.MsmqSection, Shuttle.Esb.Msmq"/>
@@ -48,4 +47,4 @@ In addition to this there is also a Msmq specific section (defaults specified he
   .
   .
 <configuration>
-~~~
+``` 

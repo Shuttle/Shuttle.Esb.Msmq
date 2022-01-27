@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq", "Shuttle.Esb.Msmq\Shuttle.Esb.Msmq.csproj", "{6188F87E-33EB-4626-AEE9-F17B43731FD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shuttle.Esb.Msmq", "Shuttle.Esb.Msmq\Shuttle.Esb.Msmq.csproj", "{6188F87E-33EB-4626-AEE9-F17B43731FD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.Msmq.Tests", "Shuttle.Esb.Msmq.Tests\Shuttle.Esb.Msmq.Tests.csproj", "{36E4F136-9F4B-4335-A5EC-E9D2785457F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shuttle.Esb.Msmq.Tests", "Shuttle.Esb.Msmq.Tests\Shuttle.Esb.Msmq.Tests.csproj", "{36E4F136-9F4B-4335-A5EC-E9D2785457F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8CDA7991-41E0-4B70-BB98-49D6C4908A4F}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
