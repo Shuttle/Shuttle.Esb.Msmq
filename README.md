@@ -10,9 +10,15 @@ Msmq creates outgoing queues internally so it is not necessary to use an outbox.
 
 ## Installation / Activation
 
-You need to install / activate msmq on your system before using this queuing option.
+You need to install / activate MSMQ on your system before using this queuing option.
 
 ## Configuration
+
+Since an instance of the `IMsmqConfiguration` interface is required remember to register one.  Typically the default implementation will do:
+
+``` c#
+IComponentRegistry.Register<IMsmqConfiguration, MsmqConfiguration>();
+```
 
 The queue configuration is part of the specified uri, e.g.:
 
