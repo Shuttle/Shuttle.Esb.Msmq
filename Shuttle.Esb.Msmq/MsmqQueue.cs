@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Messaging;
 using System.Security.Principal;
+using Microsoft.Extensions.Options;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Logging;
 using Shuttle.Core.Pipelines;
@@ -23,18 +24,20 @@ namespace Shuttle.Esb.Msmq
         private readonly TimeSpan _timeout;
         private bool _journalInitialized;
 
-        public MsmqQueue(Uri uri, IMsmqConfiguration configuration)
+        public MsmqQueue(Uri uri, IOptions<MsmqSettings> msmqOptions)
         {
-            Guard.AgainstNull(uri, "uri");
-            Guard.AgainstNull(configuration, "configuration");
+            Guard.AgainstNull(uri, nameof(uri));
+            Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
 
             _log = Log.For(this);
 
             _parser = new MsmqUriParser(uri);
 
+            var settings = msmqOptions.Value;
+
             _timeout = _parser.Local
-                ? TimeSpan.FromMilliseconds(configuration.LocalQueueTimeoutMilliseconds)
-                : TimeSpan.FromMilliseconds(configuration.RemoteQueueTimeoutMilliseconds);
+                ? settings.LocalQueueTimeout
+                : settings.RemoteQueueTimeout;
 
             Uri = _parser.Uri;
 
@@ -93,6 +96,7 @@ namespace Shuttle.Esb.Msmq
         }
 
         public Uri Uri { get; }
+        public bool IsStream => false;
 
         public bool IsEmpty()
         {
