@@ -6,9 +6,9 @@ namespace Shuttle.Esb.Msmq
 {
     public class MsmqQueueFactory : IQueueFactory
     {
-        private readonly IOptions<MsmqSettings> _msmqOptions;
+        private readonly IOptions<MsmqOptions> _msmqOptions;
 
-        public MsmqQueueFactory(IOptions<MsmqSettings> msmqOptions)
+        public MsmqQueueFactory(IOptions<MsmqOptions> msmqOptions)
         {
             Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Shuttle.Core.Contract;
 
 namespace Shuttle.Esb.Msmq
@@ -13,16 +12,17 @@ namespace Shuttle.Esb.Msmq
         {
             Guard.AgainstNull(services, nameof(services));
 
-            var configurationBuilder = new MsmqBuilder(services);
+            var msmqBuilder = new MsmqBuilder(services);
 
-            builder?.Invoke(configurationBuilder);
+            builder?.Invoke(msmqBuilder);
 
             services.TryAddSingleton<IQueueFactory, MsmqQueueFactory>();
 
-            if (!configurationBuilder.SettingsRetrieved)
+            services.AddOptions<MsmqOptions>().Configure(options =>
             {
-                services.TryAddSingleton(serviceProvider => Options.Create(configurationBuilder.Settings));
-            }
+                options.LocalQueueTimeout = msmqBuilder.Options.LocalQueueTimeout;
+                options.RemoteQueueTimeout = msmqBuilder.Options.RemoteQueueTimeout;
+            });
 
             return services;
         }

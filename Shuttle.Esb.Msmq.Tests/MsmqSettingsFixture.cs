@@ -9,13 +9,13 @@ namespace Shuttle.Esb.Msmq.Tests
     [TestFixture]
     public class MsmqSettingsFixture
     {
-        protected MsmqSettings GetSettings()
+        protected MsmqOptions GetSettings()
         {
-            var result = new MsmqSettings();
+            var result = new MsmqOptions();
 
             new ConfigurationBuilder()
                 .AddJsonFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @".\appsettings.json")).Build()
-                .GetRequiredSection($"{MsmqSettings.SectionName}").Bind(result);
+                .GetRequiredSection($"{MsmqOptions.SectionName}").Bind(result);
 
             return result;
         }

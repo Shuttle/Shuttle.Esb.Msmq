@@ -2,7 +2,7 @@ using System;
 
 namespace Shuttle.Esb.Msmq
 {
-    public class MsmqSettings
+    public class MsmqOptions
     {
         public const string SectionName = "Shuttle:Msmq";
 
