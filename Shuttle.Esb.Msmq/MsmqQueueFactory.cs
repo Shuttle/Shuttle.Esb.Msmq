@@ -6,13 +6,14 @@ namespace Shuttle.Esb.Msmq
 {
     public class MsmqQueueFactory : IQueueFactory
     {
-        private readonly IOptions<MsmqOptions> _msmqOptions;
+        private readonly MsmqOptions _msmqOptions;
 
         public MsmqQueueFactory(IOptions<MsmqOptions> msmqOptions)
         {
             Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
+            Guard.AgainstNull(msmqOptions.Value, nameof(msmqOptions.Value));
 
-            _msmqOptions = msmqOptions;
+            _msmqOptions = msmqOptions.Value;
         }
 
         public string Scheme => MsmqUriParser.Scheme;

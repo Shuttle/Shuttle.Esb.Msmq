@@ -24,7 +24,7 @@ namespace Shuttle.Esb.Msmq
         private readonly TimeSpan _timeout;
         private bool _journalInitialized;
 
-        public MsmqQueue(Uri uri, IOptions<MsmqOptions> msmqOptions)
+        public MsmqQueue(Uri uri, MsmqOptions msmqOptions)
         {
             Guard.AgainstNull(uri, nameof(uri));
             Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
@@ -33,7 +33,7 @@ namespace Shuttle.Esb.Msmq
 
             _parser = new MsmqUriParser(uri);
 
-            var settings = msmqOptions.Value;
+            var settings = msmqOptions;
 
             _timeout = _parser.Local
                 ? settings.LocalQueueTimeout

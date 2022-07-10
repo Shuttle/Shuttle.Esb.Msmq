@@ -7,9 +7,9 @@ using Shuttle.Core.Configuration;
 namespace Shuttle.Esb.Msmq.Tests
 {
     [TestFixture]
-    public class MsmqSettingsFixture
+    public class MsmqOptionsFixture
     {
-        protected MsmqOptions GetSettings()
+        protected MsmqOptions GetOptions()
         {
             var result = new MsmqOptions();
 
@@ -23,7 +23,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [Test]
         public void Should_be_able_to_load_a_full_configuration()
         {
-            var settings = GetSettings();
+            var settings = GetOptions();
 
             Assert.IsNotNull(settings);
 
