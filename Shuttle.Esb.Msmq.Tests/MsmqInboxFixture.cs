@@ -5,12 +5,13 @@ namespace Shuttle.Esb.Msmq.Tests
 {
     public class MsmqInboxFixture : InboxFixture
     {
-        [Test]
-        [TestCase(false)]
-        [TestCase(true)]
-        public void Should_be_able_handle_errors(bool isTransactionalEndpoint)
+        [TestCase(true, true)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        [TestCase(false, false)]
+        public void Should_be_able_handle_errors(bool hasErrorQueue, bool isTransactionalEndpoint)
         {
-            TestInboxError(MsmqFixture.GetServiceCollection(), "msmq://./{0}", isTransactionalEndpoint);
+            TestInboxError(MsmqFixture.GetServiceCollection(), "msmq://./{0}", hasErrorQueue, isTransactionalEndpoint);
         }
 
         [Test]
