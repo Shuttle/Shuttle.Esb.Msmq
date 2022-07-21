@@ -28,7 +28,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(300, true)]
         public void Should_be_able_to_process_queue_timeously(int count, bool isTransactionalEndpoint)
         {
-            TestInboxThroughput(MsmqFixture.GetServiceCollection(), "msmq://./{0}", 1000, count,
+            TestInboxThroughput(MsmqFixture.GetServiceCollection(), "msmq://./{0}", 1000, 5, count,
                 isTransactionalEndpoint);
         }
 
