@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
-using Shuttle.Core.Configuration;
 
 namespace Shuttle.Esb.Msmq.Tests
 {
@@ -27,8 +26,7 @@ namespace Shuttle.Esb.Msmq.Tests
 
             Assert.IsNotNull(settings);
 
-            Assert.AreEqual(TimeSpan.Zero, settings.LocalQueueTimeout);
-            Assert.AreEqual(TimeSpan.FromSeconds(2), settings.RemoteQueueTimeout);
+            Assert.AreEqual(TimeSpan.Zero, settings.Timeout);
         }
     }
 }

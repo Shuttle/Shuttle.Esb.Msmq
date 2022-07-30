@@ -2,44 +2,35 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Messaging;
-using System.Security.Principal;
-using Microsoft.Extensions.Options;
 using Shuttle.Core.Contract;
-using Shuttle.Core.Logging;
 using Shuttle.Core.Pipelines;
-using Shuttle.Core.Reflection;
 
 namespace Shuttle.Esb.Msmq
 {
     public class MsmqQueue : IQueue, ICreateQueue, IDropQueue, IPurgeQueue
     {
         private readonly ReusableObjectPool<MsmqGetMessagePipeline> _dequeuePipelinePool;
+        private readonly string _path;
+        private readonly string _journalPath;
 
-        private readonly ILog _log;
         private readonly MessagePropertyFilter _messagePropertyFilter;
         private readonly TimeSpan _millisecondTimeSpan = TimeSpan.FromMilliseconds(1);
         private readonly Type _msmqDequeuePipelineType = typeof(MsmqGetMessagePipeline);
-        private readonly object _padlock = new object();
-        private readonly MsmqUriParser _parser;
-        private readonly TimeSpan _timeout;
+        private readonly MsmqOptions _msmqOptions;
+        private readonly object _lock = new object();
         private bool _journalInitialized;
 
-        public MsmqQueue(Uri uri, MsmqOptions msmqOptions)
+        public MsmqQueue(QueueUri uri, MsmqOptions msmqOptions)
         {
             Guard.AgainstNull(uri, nameof(uri));
             Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
 
-            _log = Log.For(this);
+            _msmqOptions = msmqOptions;
 
-            _parser = new MsmqUriParser(uri);
+            Uri = uri;
 
-            var settings = msmqOptions;
-
-            _timeout = _parser.Local
-                ? settings.LocalQueueTimeout
-                : settings.RemoteQueueTimeout;
-
-            Uri = _parser.Uri;
+            _path = $"{msmqOptions.Path}{(msmqOptions.Path.EndsWith("\\") ? string.Empty : "\\")}{Uri.QueueName}";
+            _journalPath = string.Concat(_path, "$journal");
 
             _messagePropertyFilter = new MessagePropertyFilter();
             _messagePropertyFilter.SetAll();
@@ -56,14 +47,7 @@ namespace Shuttle.Esb.Msmq
                 return;
             }
 
-            if (!_parser.Local)
-            {
-                throw new InvalidOperationException(string.Format(Resources.CannotCreateRemoteQueue, Uri));
-            }
-
-            MessageQueue.Create(_parser.Path, true).Dispose();
-
-            _log.Information(string.Format(Resources.QueueCreated, _parser.Path));
+            MessageQueue.Create(_path, true).Dispose();
         }
 
         public void Drop()
@@ -75,14 +59,7 @@ namespace Shuttle.Esb.Msmq
                 return;
             }
 
-            if (!_parser.Local)
-            {
-                throw new InvalidOperationException(string.Format(Resources.CannotDropRemoteQueue, Uri));
-            }
-
-            MessageQueue.Delete(_parser.Path);
-
-            _log.Information(string.Format(Resources.QueueDropped, _parser.Path));
+            MessageQueue.Delete(_path);
         }
 
         public void Purge()
@@ -91,11 +68,9 @@ namespace Shuttle.Esb.Msmq
             {
                 queue.Purge();
             }
-
-            _log.Information(string.Format(Resources.QueuePurged, _parser.Path));
         }
 
-        public Uri Uri { get; }
+        public QueueUri Uri { get; }
         public bool IsStream => false;
 
         public bool IsEmpty()
@@ -104,7 +79,7 @@ namespace Shuttle.Esb.Msmq
             {
                 using (var queue = CreateQueue())
                 {
-                    return queue.Peek(_timeout) == null;
+                    return queue.Peek(_msmqOptions.Timeout) == null;
                 }
             }
             catch (MessageQueueException ex)
@@ -116,7 +91,7 @@ namespace Shuttle.Esb.Msmq
 
                 if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
                 {
-                    AccessDenied(_log, _parser.Path);
+                    AccessDenied(_path);
                 }
 
                 throw;
@@ -135,7 +110,7 @@ namespace Shuttle.Esb.Msmq
             var sendMessage = new Message
             {
                 Recoverable = true,
-                UseDeadLetterQueue = _parser.UseDeadLetterQueue,
+                UseDeadLetterQueue = _msmqOptions.UseDeadLetterQueue,
                 Label = transportMessage.MessageId.ToString(),
                 CorrelationId = $@"{transportMessage.MessageId}\1",
                 BodyStream = stream
@@ -148,7 +123,7 @@ namespace Shuttle.Esb.Msmq
 
             if (transportMessage.HasPriority())
             {
-                var priority = (MessagePriority) transportMessage.Priority;
+                var priority = (MessagePriority)transportMessage.Priority;
 
                 if (priority < MessagePriority.Lowest)
                 {
@@ -174,18 +149,8 @@ namespace Shuttle.Esb.Msmq
             {
                 if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
                 {
-                    AccessDenied(_log, _parser.Path);
+                    AccessDenied(_path);
                 }
-
-                _log.Error(string.Format(Resources.SendMessageIdError, transportMessage.MessageId, Uri,
-                    ex.AllMessages()));
-
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _log.Error(string.Format(Resources.SendMessageIdError, transportMessage.MessageId, Uri,
-                    ex.AllMessages()));
 
                 throw;
             }
@@ -199,33 +164,24 @@ namespace Shuttle.Esb.Msmq
                 ReturnJournalMessages();
             }
 
-            try
-            {
-                var pipeline = _dequeuePipelinePool.Get(_msmqDequeuePipelineType) ?? new MsmqGetMessagePipeline();
+            var pipeline = _dequeuePipelinePool.Get(_msmqDequeuePipelineType) ?? new MsmqGetMessagePipeline();
 
-                pipeline.Execute(_parser, _timeout);
+            pipeline.Execute(_msmqOptions, CreateQueue(), CreateJournalQueue());
 
-                _dequeuePipelinePool.Release(pipeline);
+            _dequeuePipelinePool.Release(pipeline);
 
-                var message = pipeline.State.Get<Message>();
+            var message = pipeline.State.Get<Message>();
 
-                return message == null ? null : new ReceivedMessage(message.BodyStream, new Guid(message.Label));
-            }
-            catch (Exception ex)
-            {
-                _log.Error(string.Format(Resources.GetMessageError, _parser.Path, ex.AllMessages()));
-
-                throw;
-            }
+            return message == null ? null : new ReceivedMessage(message.BodyStream, new Guid(message.Label));
         }
 
         public void Acknowledge(object acknowledgementToken)
         {
-            var messageId = (Guid) acknowledgementToken;
+            var messageId = (Guid)acknowledgementToken;
 
             try
             {
-                lock (_padlock)
+                lock (_lock)
                 {
                     using (var queue = CreateJournalQueue())
                     {
@@ -237,16 +193,8 @@ namespace Shuttle.Esb.Msmq
             {
                 if (ex.MessageQueueErrorCode == MessageQueueErrorCode.AccessDenied)
                 {
-                    AccessDenied(_log, _parser.Path);
+                    AccessDenied(_path);
                 }
-
-                _log.Error(string.Format(Resources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
-
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _log.Error(string.Format(Resources.RemoveError, messageId, _parser.Path, ex.AllMessages()));
 
                 throw;
             }
@@ -261,12 +209,12 @@ namespace Shuttle.Esb.Msmq
                 return;
             }
 
-            new MsmqReleaseMessagePipeline().Execute((Guid) acknowledgementToken, _parser, _timeout);
+            new MsmqReleaseMessagePipeline().Execute((Guid)acknowledgementToken, _msmqOptions, CreateQueue(), CreateJournalQueue());
         }
 
         private void ReturnJournalMessages()
         {
-            lock (_padlock)
+            lock (_lock)
             {
                 if (_journalInitialized
                     ||
@@ -277,7 +225,7 @@ namespace Shuttle.Esb.Msmq
                     return;
                 }
 
-                new MsmqReturnJournalPipeline().Execute(_parser, _timeout);
+                new MsmqReturnJournalPipeline().Execute(_msmqOptions, CreateQueue(), CreateJournalQueue());
 
                 _journalInitialized = true;
             }
@@ -290,14 +238,7 @@ namespace Shuttle.Esb.Msmq
                 return;
             }
 
-            if (!_parser.Local)
-            {
-                throw new InvalidOperationException(string.Format(Resources.CannotCreateRemoteQueue, Uri));
-            }
-
-            MessageQueue.Create(_parser.JournalPath, true).Dispose();
-
-            _log.Information(string.Format(Resources.QueueCreated, _parser.Path));
+            MessageQueue.Create(_journalPath, true).Dispose();
         }
 
         private void DropJournal()
@@ -307,29 +248,22 @@ namespace Shuttle.Esb.Msmq
                 return;
             }
 
-            if (!_parser.Local)
-            {
-                throw new InvalidOperationException(string.Format(Resources.CannotDropRemoteQueue, Uri));
-            }
-
-            MessageQueue.Delete(_parser.JournalPath);
-
-            _log.Information(string.Format(Resources.QueueDropped, _parser.JournalPath));
+            MessageQueue.Delete(_journalPath);
         }
 
         private bool Exists()
         {
-            return MessageQueue.Exists(_parser.Path);
+            return MessageQueue.Exists(_path);
         }
 
         private bool JournalExists()
         {
-            return MessageQueue.Exists(_parser.JournalPath);
+            return MessageQueue.Exists(_journalPath);
         }
 
         private MessageQueue CreateQueue()
         {
-            return new MessageQueue(_parser.Path)
+            return new MessageQueue(_path)
             {
                 MessageReadPropertyFilter = _messagePropertyFilter
             };
@@ -337,22 +271,15 @@ namespace Shuttle.Esb.Msmq
 
         private MessageQueue CreateJournalQueue()
         {
-            return new MessageQueue(_parser.JournalPath)
+            return new MessageQueue(_journalPath)
             {
                 MessageReadPropertyFilter = _messagePropertyFilter
             };
         }
 
-        public static void AccessDenied(ILog log, string path)
+        public static void AccessDenied(string path)
         {
-            Guard.AgainstNull(log, "log");
-            Guard.AgainstNull(path, "path");
-
-            log.Fatal(
-                string.Format(
-                    Resources.AccessDenied,
-                    WindowsIdentity.GetCurrent().Name,
-                    path));
+            Guard.AgainstNullOrEmptyString(path, nameof(path));
 
             if (Environment.UserInteractive)
             {

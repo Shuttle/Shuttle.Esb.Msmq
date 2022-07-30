@@ -11,38 +11,38 @@ namespace Shuttle.Esb.Msmq
     {
         public void Execute(OnBeginTransaction pipelineEvent)
         {
-            var tx = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
+            var queueTransaction = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
 
-            if (tx == null)
+            if (queueTransaction == null)
             {
                 return;
             }
 
-            tx.Begin();
+            queueTransaction.Begin();
         }
 
         public void Execute(OnCommitTransaction pipelineEvent)
         {
-            var tx = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
+            var queueTransaction = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
 
-            if (tx == null)
+            if (queueTransaction == null)
             {
                 return;
             }
 
-            tx.Commit();
+            queueTransaction.Commit();
         }
 
         public void Execute(OnDispose pipelineEvent)
         {
-            var tx = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
+            var queueTransaction = pipelineEvent.Pipeline.State.Get<MessageQueueTransaction>();
 
-            if (tx == null)
+            if (queueTransaction == null)
             {
                 return;
             }
 
-            tx.Dispose();
+            queueTransaction.Dispose();
             pipelineEvent.Pipeline.State.Replace<MessageQueueTransaction>(null);
         }
 

@@ -11,7 +11,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(false, false)]
         public void Should_be_able_handle_errors(bool hasErrorQueue, bool isTransactionalEndpoint)
         {
-            TestInboxError(MsmqFixture.GetServiceCollection(), "msmq://./{0}", hasErrorQueue, isTransactionalEndpoint);
+            TestInboxError(MsmqFixture.GetServiceCollection(), "msmq://local/{0}", hasErrorQueue, isTransactionalEndpoint);
         }
 
         [Test]
@@ -19,7 +19,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(300, true)]
         public void Should_be_able_to_process_messages_concurrently(int msToComplete, bool isTransactionalEndpoint)
         {
-            TestInboxConcurrency(MsmqFixture.GetServiceCollection(), "msmq://./{0}", msToComplete,
+            TestInboxConcurrency(MsmqFixture.GetServiceCollection(), "msmq://local/{0}", msToComplete,
                 isTransactionalEndpoint);
         }
 
@@ -28,20 +28,20 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(300, true)]
         public void Should_be_able_to_process_queue_timeously(int count, bool isTransactionalEndpoint)
         {
-            TestInboxThroughput(MsmqFixture.GetServiceCollection(), "msmq://./{0}", 1000, 5, count,
+            TestInboxThroughput(MsmqFixture.GetServiceCollection(), "msmq://local/{0}", 1000, count, 5,
                 isTransactionalEndpoint);
         }
 
         [Test]
         public void Should_be_able_to_handle_a_deferred_message()
         {
-            TestInboxDeferred(MsmqFixture.GetServiceCollection(), "msmq://./{0}");
+            TestInboxDeferred(MsmqFixture.GetServiceCollection(), "msmq://local/{0}");
         }
 
         [Test]
         public void Should_be_able_to_expire_a_message()
         {
-            TestInboxExpiry(MsmqFixture.GetServiceCollection(), "msmq://./{0}");
+            TestInboxExpiry(MsmqFixture.GetServiceCollection(), "msmq://local/{0}");
         }
     }
 }

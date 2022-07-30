@@ -112,22 +112,14 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccessDenied" xml:space="preserve">
     <value>The account ({0}) the process is running under does not have permission to access queue '{1}'.  Permissions required on queue: Send, Receive, and Peek.  This instance will now close.</value>
     <comment>{0} = account, {1} = queue uri</comment>
-  </data>
-  <data name="CannotCreateRemoteQueue" xml:space="preserve">
-    <value>Only local queues can be created.  Remote queue '{0}' not created.</value>
-    <comment>{0} = queue uri</comment>
-  </data>
-  <data name="CannotDropRemoteQueue" xml:space="preserve">
-    <value>Only local queues can be dropped.  Remote queue '{0}' not dropped.</value>
-    <comment>{0} = queue uri</comment>
   </data>
   <data name="GetMessageError" xml:space="preserve">
     <value>Error trying to get  message from msmq queue '{0}'.  Exception: {1}</value>

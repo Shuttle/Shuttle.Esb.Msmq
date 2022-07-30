@@ -10,7 +10,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(true)]
         public void Should_be_able_to_distribute_messages(bool isTransactionalEndpoint)
         {
-            TestDistributor(MsmqFixture.GetServiceCollection(), MsmqFixture.GetServiceCollection(), @"msmq://./{0}",
+            TestDistributor(MsmqFixture.GetServiceCollection(), MsmqFixture.GetServiceCollection(), @"msmq://local/{0}",
                 isTransactionalEndpoint);
         }
     }

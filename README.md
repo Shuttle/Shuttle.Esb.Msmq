@@ -8,6 +8,13 @@ All MSMQ queues are required to be **transactional**.  In addition to the actual
 
 MSMQ creates outgoing queues internally so it is not necessary to use an outbox.
 
+            Path = Local
+                ? $@"{host}\private$\{uri.Segments[1]}"
+                : usesIPAddress
+                    ? $@"FormatName:DIRECT=TCP:{host}\private$\{uri.Segments[1]}"
+                    : $@"FormatName:DIRECT=OS:{host}\private$\{uri.Segments[1]}";
+
+
 ## Installation / Activation
 
 You need to install / activate MSMQ on your system before using this queuing option.

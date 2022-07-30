@@ -19,7 +19,7 @@ namespace Shuttle.Esb.Msmq {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -66,24 +66,6 @@ namespace Shuttle.Esb.Msmq {
         public static string AccessDenied {
             get {
                 return ResourceManager.GetString("AccessDenied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only local queues can be created.  Remote queue &apos;{0}&apos; not created..
-        /// </summary>
-        public static string CannotCreateRemoteQueue {
-            get {
-                return ResourceManager.GetString("CannotCreateRemoteQueue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only local queues can be dropped.  Remote queue &apos;{0}&apos; not dropped..
-        /// </summary>
-        public static string CannotDropRemoteQueue {
-            get {
-                return ResourceManager.GetString("CannotDropRemoteQueue", resourceCulture);
             }
         }
         

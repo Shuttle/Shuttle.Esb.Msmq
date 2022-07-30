@@ -6,7 +6,8 @@ namespace Shuttle.Esb.Msmq
     {
         public const string SectionName = "Shuttle:Msmq";
 
-        public TimeSpan LocalQueueTimeout { get; set; } = TimeSpan.Zero;
-        public TimeSpan RemoteQueueTimeout { get; set; } = TimeSpan.FromMilliseconds(2000);
+        public TimeSpan Timeout { get; set; } = TimeSpan.Zero;
+        public string Path { get; set; }
+        public bool UseDeadLetterQueue { get; set; }
     }
 }

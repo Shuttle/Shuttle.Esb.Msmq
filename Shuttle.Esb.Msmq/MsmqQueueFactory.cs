@@ -6,23 +6,30 @@ namespace Shuttle.Esb.Msmq
 {
     public class MsmqQueueFactory : IQueueFactory
     {
-        private readonly MsmqOptions _msmqOptions;
+        private readonly IOptionsMonitor<MsmqOptions> _msmqOptions;
 
-        public MsmqQueueFactory(IOptions<MsmqOptions> msmqOptions)
+        public MsmqQueueFactory(IOptionsMonitor<MsmqOptions> msmqOptions)
         {
             Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
-            Guard.AgainstNull(msmqOptions.Value, nameof(msmqOptions.Value));
 
-            _msmqOptions = msmqOptions.Value;
+            _msmqOptions = msmqOptions;
         }
 
-        public string Scheme => MsmqUriParser.Scheme;
+        public string Scheme => "msmq";
 
         public IQueue Create(Uri uri)
         {
             Guard.AgainstNull(uri, "uri");
 
-            return new MsmqQueue(uri, _msmqOptions);
+            var queueUri = new QueueUri(uri).SchemeInvariant(Scheme);
+            var msmqOptions = _msmqOptions.Get(queueUri.ConfigurationName);
+
+            if (msmqOptions == null)
+            {
+                throw new InvalidOperationException(string.Format(Esb.Resources.QueueConfigurationNameException, queueUri.ConfigurationName));
+            }
+
+            return new MsmqQueue(queueUri, msmqOptions);
         }
     }
 }

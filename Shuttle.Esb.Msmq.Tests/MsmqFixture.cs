@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Shuttle.Esb.Msmq.Tests
@@ -10,7 +11,13 @@ namespace Shuttle.Esb.Msmq.Tests
             var services = new ServiceCollection();
 
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-            services.AddMsmq();
+            services.AddMsmq(builder =>
+            {
+                builder.AddOptions("local", new MsmqOptions
+                {
+                    Path = ".\\private$"
+                });
+            });
 
             return services;
         }
