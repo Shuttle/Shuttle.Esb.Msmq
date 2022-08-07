@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="Shuttle.Core.Contract" Version="10.1.0" />
-    <PackageReference Include="Shuttle.Core.Uris" Version="10.0.6" />
     <PackageReference Include="Shuttle.Esb" Version="13.0.0" />
   </ItemGroup>
 
