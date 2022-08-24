@@ -26,7 +26,9 @@ namespace Shuttle.Esb.Msmq.Tests
 
             Assert.IsNotNull(settings);
 
-            Assert.AreEqual(TimeSpan.Zero, settings.Timeout);
+            Assert.That(settings.Timeout, Is.EqualTo(TimeSpan.FromSeconds(2)));
+            Assert.That(settings.UseDeadLetterQueue, Is.False);
+            Assert.That(settings.Path, Is.EqualTo("some-path"));
         }
     }
 }
