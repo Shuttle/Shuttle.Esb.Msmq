@@ -35,12 +35,14 @@ The default JSON settings structure is as follows:
 ```json
 {
   "Shuttle": {
-    "Msmq": {
-      "Timeout": "00:00:02",
-      "UseDeadLetterQueue": false,
-      "Path": "some-path" 
+    "ServiceBus": {
+        "Msmq": {
+          "Timeout": "00:00:02",
+          "UseDeadLetterQueue": false,
+          "Path": "some-path" 
+        }
+      }
     }
-  }
 }
 ``` 
 
