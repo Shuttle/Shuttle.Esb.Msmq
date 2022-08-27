@@ -50,5 +50,6 @@ The default JSON settings structure is as follows:
 
 | Option | Default	| Description |
 | --- | --- | --- | 
-| useDeadLetterQueue	 | true | Specifies the value to pass to the 'UseDeadLetterQueue' property of the message sent. | 
-| Timeout | 00:00:00 | Timespan indicating how long to wait for queue operations to complete. |
+| `Path` | | The [MessageQueue.Path](https://docs.microsoft.com/en-us/dotnet/api/system.messaging.messagequeue.path?view=netframework-4.8) to use to connect to the queue. |
+| `UseDeadLetterQueue` | `true` | Specifies the value to pass to the 'UseDeadLetterQueue' property of the message sent. | 
+| `Timeout` | 00:00:00 | Timespan indicating how long to wait for queue operations to complete. |
