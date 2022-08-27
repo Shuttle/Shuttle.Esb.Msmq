@@ -16,7 +16,7 @@ You need to install / activate MSMQ on your system before using this queuing opt
 
 The URI structure is `msmq://configuration-name/queue-name`.
 
-``` c#
+```c#
 services.AddMsmq(builder =>
 {
     builder.AddOptions("local", new MsmqOptions
