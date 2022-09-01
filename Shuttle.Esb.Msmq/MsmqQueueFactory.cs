@@ -1,31 +1,35 @@
 using System;
+using Microsoft.Extensions.Options;
 using Shuttle.Core.Contract;
 
 namespace Shuttle.Esb.Msmq
 {
     public class MsmqQueueFactory : IQueueFactory
     {
-        public MsmqQueueFactory(IMsmqConfiguration configuration)
+        private readonly IOptionsMonitor<MsmqOptions> _msmqOptions;
+
+        public MsmqQueueFactory(IOptionsMonitor<MsmqOptions> msmqOptions)
         {
-            Configuration = configuration;
+            Guard.AgainstNull(msmqOptions, nameof(msmqOptions));
+
+            _msmqOptions = msmqOptions;
         }
 
-        public IMsmqConfiguration Configuration { get; }
-
-        public string Scheme => MsmqUriParser.Scheme;
+        public string Scheme => "msmq";
 
         public IQueue Create(Uri uri)
         {
             Guard.AgainstNull(uri, "uri");
 
-            return new MsmqQueue(uri, Configuration);
-        }
+            var queueUri = new QueueUri(uri).SchemeInvariant(Scheme);
+            var msmqOptions = _msmqOptions.Get(queueUri.ConfigurationName);
 
-        public bool CanCreate(Uri uri)
-        {
-            Guard.AgainstNull(uri, "uri");
+            if (msmqOptions == null)
+            {
+                throw new InvalidOperationException(string.Format(Esb.Resources.QueueConfigurationNameException, queueUri.ConfigurationName));
+            }
 
-            return Scheme.Equals(uri.Scheme, StringComparison.InvariantCultureIgnoreCase);
+            return new MsmqQueue(queueUri, msmqOptions);
         }
     }
 }

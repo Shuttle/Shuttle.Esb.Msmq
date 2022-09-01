@@ -10,7 +10,7 @@ namespace Shuttle.Esb.Msmq.Tests
         [TestCase(true)]
         public void Should_be_able_handle_errors(bool isTransactionalEndpoint)
         {
-            TestOutboxSending(MsmqFixture.GetComponentContainer(), "msmq://./{0}", isTransactionalEndpoint);
+            TestOutboxSending(MsmqFixture.GetServiceCollection(), "msmq://local/{0}", 1, isTransactionalEndpoint);
         }
     }
 }

@@ -1,19 +1,25 @@
-﻿using Castle.Windsor;
-using Shuttle.Core.Castle;
-using Shuttle.Core.Container;
-using Shuttle.Esb.Tests;
+﻿using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shuttle.Esb.Msmq.Tests
 {
     public static class MsmqFixture
     {
-        public static ComponentContainer GetComponentContainer()
+        public static IServiceCollection GetServiceCollection()
         {
-            var container = new WindsorComponentContainer(new WindsorContainer());
+            var services = new ServiceCollection();
 
-            container.Register<IMsmqConfiguration, MsmqConfiguration>();
+            services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+            services.AddMsmq(builder =>
+            {
+                builder.AddOptions("local", new MsmqOptions
+                {
+                    Path = ".\\private$"
+                });
+            });
 
-            return new ComponentContainer(container, () => container);
+            return services;
         }
     }
 }
