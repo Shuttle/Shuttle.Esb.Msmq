@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net461;</TargetFrameworks>
@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Shuttle.Core.Contract" Version="10.1.0" />
-    <PackageReference Include="Shuttle.Esb" Version="13.0.0" />
+    <PackageReference Include="Shuttle.Esb" Version="13.1.0" />
   </ItemGroup>
 
   <ItemGroup>
