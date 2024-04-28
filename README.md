@@ -1,5 +1,9 @@
 # MSMQ
 
+::: info
+This package is no longer beign maintained.
+:::
+
 ```
 PM> Install-Package Shuttle.Esb.Msmq
 ```
